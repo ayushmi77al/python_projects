@@ -1,2 +1,2 @@
-# python_projects
-Here are some of my python projects
+# python_projcts
+1. Stone-Paper-Scissor game.
