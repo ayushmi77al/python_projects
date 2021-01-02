@@ -30,7 +30,7 @@ company_ticker = {'tcs': 'TCS.NS',
 
 
 def weatherDescription(city_name):
-    api_key = "2f92968d4b299ff13d9c8d30239ded82"
+    api_key = "your-api-key"
 
     # base_url variable to store url
     base_url = "http://api.openweathermap.org/data/2.5/weather?"
