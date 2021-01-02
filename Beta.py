@@ -8,7 +8,6 @@ import datetime
 import wikipedia
 import pyjokes
 import webbrowser
-# import yahoo_fin.stock_info as si
 import random
 import requests
 import json
