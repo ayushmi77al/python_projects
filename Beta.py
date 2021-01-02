@@ -1,4 +1,5 @@
 
+
 import speech_recognition as sr
 import pyttsx3
 import pywhatkit
@@ -7,7 +8,7 @@ import datetime
 import wikipedia
 import pyjokes
 import webbrowser
-import yahoo_fin.stock_info as si
+# import yahoo_fin.stock_info as si
 import random
 import requests
 import json
@@ -16,21 +17,32 @@ recognizer = sr.Recognizer()
 
 engine = pyttsx3.init('sapi5')
 
-company_ticker = {'tcs': 'TCS.NS',
-                  'wipro': 'WIPRO.NS',
-                  'tata motors': 'TATAMOTORS.NS',
-                  'tata steel': 'TATASTEEL.NS',
-                  'reliance': 'RELIANCE.NS',
-                  'sbi': 'SBIN.NS',
-                  'amazon': 'AMZN',
-                  'microsoft': 'MSFT',
-                  'tesla': 'TSLA',
-                  'apple': 'AAPL',
-                  'google': 'GOOGL'}
+# saving stock prices
+
+
+def collectStockData():
+    nse = requests.get(
+        "https://financialmodelingprep.com/api/v3/quotes/nse?apikey='stock-api-key'").text
+    nsdaq = requests.get(
+        "https://financialmodelingprep.com/api/v3/quotes/nasdaq?apikey='stock-api-key'").text
+
+    stockdata = json.loads(nse)
+    stockdata += json.loads(nsdaq)
+    return stockdata
+
+
+def stockPrice(company, stockdata):
+    for item in stockdata:
+        if company == 'tcs':
+            company = 'tata consultancy'
+        if company == 'google':
+            company = 'alphabet'
+        if company in item['name'].lower():
+            return f"Stock price of {item['name']} is {item['price']}."
 
 
 def weatherDescription(city_name):
-    api_key = "your-api-key"
+    api_key = "weather-api-key"
 
     # base_url variable to store url
     base_url = "http://api.openweathermap.org/data/2.5/weather?"
@@ -140,7 +152,7 @@ def runBeta():
 
     # introduction
     elif 'who are you' in command:
-        talk('I am beta, personal assistant of Mr Psycho')
+        talk('I am beta, personal assistant made by Ayush Mittal')
 
     # searching on wikipedia
     elif 'wikipedia' in command:
@@ -171,15 +183,20 @@ def runBeta():
         final_url = base_url + command
         talk('here are some best results')
         webbrowser.get().open(final_url, new=1)
-        # webbrowser.get('windows_default').open(command)
 
     # stock price
-    elif ('stock price' or 'stock price of') in command:
-        command = command.replace(" stock price", "")
+    elif ('stock price of') in command:
         command = command.replace("stock price of ", "")
-        price = (si.get_live_price(company_ticker[command]))
-        print(f'stock price of {command} is {price} $')
-        talk(f'stock price of {command} is {price} $')
+        stockdata = collectStockData()
+
+        # if no data found
+        try:
+            result = stockPrice(command, stockdata)
+        except AttributeError:
+            result = 'unable to find!'
+
+        print(result)
+        talk(result)
 
     # weather detail
     elif 'weather of' in command:
@@ -208,8 +225,8 @@ def runBeta():
 
 
 if __name__ == "__main__":
-    print("Namaste I'm your personal assistant Beta, how can I help you?")
-    talk("Namaste I'm your personal assistant Beta, how can I help you?")
+    print("Hello, I'm your personal assistant Beta, how can I help you?")
+    talk("Hello, I'm your personal assistant Beta, how can I help you?")
 
     while True:
         runBeta()
