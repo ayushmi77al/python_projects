@@ -25,7 +25,6 @@ if stockcount == 0:
 
     stockdata = json.loads(nse)
     stockdata += json.loads(nsdaq)
-    print('aaya')
 
 
 def stockPrice(company, stockdata):
